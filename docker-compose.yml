@@ -1,0 +1,44 @@
+services:
+  nats-server:
+    image: 'nats:latest'
+    command:  ["-c", "/nats/confs/nats-server.conf"]
+    hostname: nats-server
+    ports:
+      - 8222:8222
+      - 4222:4222/tcp
+      - 4222:4222/udp
+    volumes:
+      - ./nats-server/server.conf:/nats/confs/nats-server.conf:ro
+      - ./creds/Operator.jwt:/nats/creds/Operator.jwt:ro
+      # - nats-server/confs/ac_store/keys::ro
+    restart: always
+    depends_on:
+      - nats-account
+
+  nats-account:
+    image: "natsio/nats-account-server"
+    command: ["-c", "/nats/confs/account-server.conf"]
+    hostname: nats-account
+    ports:
+      - 9090:9090
+    volumes:
+      - ./nats-account-server/nats-accounts-server.conf:/nats/confs/account-server.conf:ro
+      - ./creds/Operator.jwt:/nats/creds/Operator.jwt:ro
+      - ./creds/Operator.creds:/nats/creds/Operator.creds:ro
+      - ./creds/SYS.jwt:/nats/creds/SYS.jwt:ro
+      - ./creds/SYS.creds:/nats/creds/SYS.creds:ro
+
+    # depends_on:
+    #   - nats-server
+
+  nats-ui:
+    image: mdawar/nats-dashboard:latest
+    container_name: natsui
+    environment:
+      REVERSE_PROXY_UPSTREAM: 'http://nats:8222'
+    ports:
+      - "9222:80"
+    depends_on:
+      - nats-server
+    # volumes:
+    #   - ./example/nats-dashboard/config.json:/srv/config.json
