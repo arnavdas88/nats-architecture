@@ -29,10 +29,21 @@ services:
     image: mdawar/nats-dashboard:latest
     container_name: natsui
     environment:
-      REVERSE_PROXY_UPSTREAM: 'http://nats:8222'
+      REVERSE_PROXY_UPSTREAM: 'http://nats-server:8222'
     ports:
       - "9222:80"
     depends_on:
       - nats-server
-    # volumes:
-    #   - ./example/nats-dashboard/config.json:/srv/config.json
+    volumes:
+      - ./nats-dashboard/config.json:/srv/config.json
+
+  nui:
+    image: ghcr.io/nats-nui/nui:edge
+    volumes:
+      - /tmp/db:/db
+      - ./nats-config/creds/iifon/SYS/sys.creds:/nats/creds/sys.creds:ro
+      - ./nats-config/creds/iifon/iifon/ACC-1.creds:/nats/creds/ACC-1.creds:ro
+    ports:
+      - "31312:31311" 
+    depends_on:
+      - nats-server
