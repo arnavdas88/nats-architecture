@@ -9,8 +9,7 @@ services:
       - 4222:4222/udp
     volumes:
       - ./nats-server/server.conf:/nats/confs/nats-server.conf:ro
-      - ./creds/Operator.jwt:/nats/creds/Operator.jwt:ro
-      # - nats-server/confs/ac_store/keys::ro
+      - ./nats-server/resolver.conf:/nats/confs/resolver.conf:ro
     restart: always
     depends_on:
       - nats-account
@@ -23,13 +22,8 @@ services:
       - 9090:9090
     volumes:
       - ./nats-account-server/nats-accounts-server.conf:/nats/confs/account-server.conf:ro
-      - ./creds/Operator.jwt:/nats/creds/Operator.jwt:ro
-      - ./creds/Operator.creds:/nats/creds/Operator.creds:ro
-      - ./creds/SYS.jwt:/nats/creds/SYS.jwt:ro
-      - ./creds/SYS.creds:/nats/creds/SYS.creds:ro
-
-    # depends_on:
-    #   - nats-server
+      - ./nats-config/creds/iifon/SYS/sys.creds:/nats/creds/SYS.creds:ro
+      - ./nats-config/iifon/iifon.jwt:/nats/creds/Operator.jwt:ro
 
   nats-ui:
     image: mdawar/nats-dashboard:latest
