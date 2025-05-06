@@ -29,4 +29,10 @@ $ chmod 777 ./nats-config/creds/<OPERATOR>/<OPERATOR>/<ACCOUNT>.creds
 $ nsc push -H ./nats-config/ --keystore-dir ./nats-config/ --all
 ```
 
+```bash
+$ export NATS_CREDS=/workspace/nats-architecture/nats-config/creds/iifon/SYS/sys.creds
+$ nats sys info
+$ nats pub "pub.acc1" "hi acc1"
+$ nats pub "pub.acc2" "hi acc2"
+```
 
